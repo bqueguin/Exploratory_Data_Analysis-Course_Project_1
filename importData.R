@@ -1,12 +1,15 @@
-# This is a script to automatically check is the data is available
-# and download it if it's necessary
-
 setwd("/Users/QUEGUINER/Desktop/Cours/Autre/Coursera/Exploratory Data Analysis/week1/Exploratory_Data_Analysis-Course_Project_1/")
-if (dir.exists("data") == F){
-    dir.create("data")
-}
-if(file.exists("data/household.txt") == F){
-    download.file("https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip", "data/household.zip")
-    unzip("data/household.zip", exdir = "data")
-    file.rename("data/household_power_consumption.txt", "data/household.txt")
+source("downloadData.R")
+
+if(!exists("household") & !exists("feb_1_2_2007")){
+    household <- read.table("data/household.txt", header = T, sep = ";", stringsAsFactors = F)
+    
+    household[, 3:9] <- apply(household[, 3:9], 2, as.numeric)
+    Moment <- paste(household$Date, household$Time, sep = "-")
+    Moment <- strptime(Moment, format = "%d/%m/%Y-%H:%M:%S")
+    household <- cbind(Moment, household[, 3:9])
+    rm(Moment)
+    
+    feb_1_2_2007 <- subset(household, Moment >= "2007-02-01" & Moment < "2007-02-03")
+    rownames(feb_1_2_2007) <- 1:nrow(feb_1_2_2007)
 }
