@@ -2,9 +2,9 @@ setwd("/Users/QUEGUINER/Desktop/Cours/Autre/Coursera/Exploratory Data Analysis/w
 source("downloadData.R")
 
 if(!exists("household") & !exists("feb_1_2_2007")){
-    household <- read.table("data/household.txt", header = T, sep = ";", stringsAsFactors = F)
+    household <- read.table("data/household.txt", header = T, sep = ";",
+                            na.strings = "?", stringsAsFactors = F)
     
-    household[, 3:9] <- apply(household[, 3:9], 2, as.numeric)
     Moment <- paste(household$Date, household$Time, sep = "-")
     Moment <- strptime(Moment, format = "%d/%m/%Y-%H:%M:%S")
     household <- cbind(Moment, household[, 3:9])
